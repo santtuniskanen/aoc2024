@@ -59,6 +59,21 @@ func calculateDifference(left, right []int) (int, error) {
 	return sum, nil
 }
 
+func calculateSimilarity(left, right []int) (int, error) {
+	rightCounts := make(map[int]int)
+	for _, num := range right {
+		rightCounts[num]++
+	}
+
+	similarity := 0
+	for _, num := range left {
+		if matches := rightCounts[num]; matches > 0 {
+			similarity += num * matches
+		}
+	}
+	return similarity, nil
+}
+
 func main() {
 	left, right, err := readFileContents("input.txt")
 	if err != nil {
@@ -68,9 +83,16 @@ func main() {
 
 	sum, err := calculateDifference(left, right)
 	if err != nil {
-		fmt.Printf("Error: ", err)
+		fmt.Printf("Error: {err}")
+		os.Exit(1)
+	}
+
+	similarityCount, err := calculateSimilarity(left, right)
+	if err != nil {
+		fmt.Printf("Error: {err}")
 		os.Exit(1)
 	}
 
 	fmt.Printf("Sum of differences: %d\n", sum)
+	fmt.Printf("Similarities: %d\n", similarityCount)
 }
